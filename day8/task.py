@@ -1,7 +1,9 @@
+import copy
+
 with open('input.txt') as f:
     lines = [line.rstrip() for line in f]
 
-operations = []
+original_operations = []
 
 for line in lines:
     operation, number = line.split(" ")
@@ -10,14 +12,14 @@ for line in lines:
         "number": int(number),
         "times": 0
     }
-    operations.append(dictionary)
+    original_operations.append(dictionary)
 
-
+# Part 1
+operations = copy.deepcopy(original_operations)
 index = 0
 operation = operations[index]
 accumulator = 0
 
-# Part 1
 while(operation["times"] < 1):
     operation["times"] += 1
     if operation["code"] == "nop":
@@ -37,8 +39,8 @@ print(accumulator)
 
 print("============")
 
-
-def loop():
+# Part two
+def loop(operations):
     index = 0
     operation = operations[index]
     accumulator = 0
@@ -55,15 +57,17 @@ def loop():
         try:
             operation = operations[index]
         except:
-            print("out of range")
             return accumulator
     return 0
 
-# for i in operations:
-#     if i["code"] == "nop":
-#         i["code"] = "jmp"
-#     elif i["code"] == "jmp":
-#         i["code"] = "nop"
-#     print(operations)
 
-    
+for i, operation in enumerate(original_operations):
+    operations = copy.deepcopy(original_operations)
+    if operation["code"] == "nop":
+        operations[i]["code"] = "jmp"
+    elif operation["code"] == "jmp":
+        operations[i]["code"] = "nop"
+    acc = loop(operations)
+    if acc > 0:
+        print(acc)
+        break
